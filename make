@@ -1,0 +1,1 @@
+g++ rest_ord_system.cpp customer.cpp dish.cpp menu.cpp order.cpp restaurant.cpp
