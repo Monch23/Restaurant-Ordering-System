@@ -7,7 +7,7 @@ Dish::Dish(const std::string &dish_name, double dish_price) :
 {}
 
 Dish::Dish(const Dish &other) :
-    m_name{other.get_name()}, m_price{other.get_price()}
+    m_name{other.m_name}, m_price{other.m_price}
 {}
 
 Dish &Dish::operator=(const Dish &rhs) {
@@ -15,16 +15,18 @@ Dish &Dish::operator=(const Dish &rhs) {
         return *this;
     }
 
-    m_name = rhs.get_name();
-    m_price = rhs.get_price();
+    m_name = rhs.m_name;
+    m_price = rhs.m_price;
 
     return *this;
 }
 
 Dish::Dish(Dish &&other) noexcept :
     m_name{std::move(other.m_name)},
-    m_price{other.get_price()}
-{}
+    m_price{other.m_price}
+{
+    other.m_price = 0.0;
+}
 
 Dish &Dish::operator=(Dish &&rhs) noexcept {
     if (this == &rhs) {

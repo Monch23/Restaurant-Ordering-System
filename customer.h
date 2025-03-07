@@ -9,7 +9,7 @@ class Customer {
     private:
         std::string m_name;
         std::string m_contact_info;
-        std::vector<Order> m_order_history;
+        std::vector<Order*> m_order_history;
     public:
         Customer(const std::string &customer_name, const std::string &contact);
         Customer(const Customer &other);
@@ -18,7 +18,7 @@ class Customer {
         Customer &operator=(Customer &&rhs) noexcept;
         ~Customer() = default;
 
-        void place_order(Order order);
+        void place_order(Order *order);
         void view_order_history(void) const;
         std::string get_name(void) const;
 };

@@ -7,15 +7,13 @@ Order::Order(Customer *customer) :
     m_customer{customer}, m_total_price{0}
 {}
 
-Order::Order(const Order &other) {
-    m_customer = other.m_customer;
-    m_total_price = other.m_total_price;
-
+Order::Order(const Order &other) : 
+    m_total_price{other.m_total_price} 
+{
     size_t orders_cnt = m_ordered_dishes.size();
 
-    for (int i = 0; i < orders_cnt; ++i) {
-        Dish *dish = new Dish{other.m_ordered_dishes[i]->get_name(), other.m_ordered_dishes[i]->get_price()};
-        m_ordered_dishes.push_back(dish);
+    for (size_t i = 0; i < orders_cnt; ++i) {
+        m_ordered_dishes.push_back(new Dish(*(other.m_ordered_dishes[i])));
     }
 }
 
@@ -27,17 +25,16 @@ Order &Order::operator=(const Order &rhs) {
     m_customer = rhs.m_customer;
     m_total_price = rhs.m_total_price;
 
-    size_t orders_cnt = m_ordered_dishes.size();
-
-    for (int i = 0; i < orders_cnt; ++i) {
-        delete m_ordered_dishes[i];
+    for (auto dish : m_ordered_dishes) {
+        delete dish;
     }
+
+    m_ordered_dishes.clear();
 
     size_t rhs_orders_cnt = rhs.m_ordered_dishes.size();
 
-    for (int i = 0; i < rhs_orders_cnt; ++i) {
-        Dish *dish = new Dish{rhs.m_ordered_dishes[i]->get_name(), rhs.m_ordered_dishes[i]->get_price()};
-        m_ordered_dishes.push_back(dish);
+    for (const auto &dish : rhs.m_ordered_dishes) {
+        m_ordered_dishes.push_back(new Dish(*dish));
     }
 
     return *this;
@@ -66,7 +63,7 @@ Order &Order::operator=(Order &&rhs) noexcept {
 Order::~Order() {
     size_t orders_cnt = m_ordered_dishes.size();
 
-    for (int i = 0; i < orders_cnt; ++i) {
+    for (size_t i = 0; i < orders_cnt; ++i) {
         delete m_ordered_dishes[i];
     }
 }
@@ -78,7 +75,7 @@ void Order::add_dish(Dish *dish) {
 void Order::calculate_total(void) {
     size_t orders_cnt = m_ordered_dishes.size();
 
-    for (int i = 0; i < orders_cnt; ++i) {
+    for (size_t i = 0; i < orders_cnt; ++i) {
         m_total_price += m_ordered_dishes[i]->get_price();
     }
 }
@@ -97,7 +94,7 @@ void Order::display_order(void) const {
         return;
     }
 
-    for (int i = 0; i < orders_cnt; ++i) {
+    for (size_t i = 0; i < orders_cnt; ++i) {
         m_ordered_dishes[i]->display();
     }
 

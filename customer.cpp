@@ -6,12 +6,11 @@ Customer::Customer(const std::string &customer_name, const std::string &contact)
 {}
 
 Customer::Customer(const Customer &other) :
-    m_name{other.m_name}, m_contact_info{other.m_contact_info}
+    m_name{other.m_name}, 
+    m_contact_info{other.m_contact_info}
 {
-    size_t orders_count = m_order_history.size();
-
-    for (int i = 0; i < orders_count; ++i) {
-        m_order_history.push_back(other.m_order_history[i]);
+    for (const auto &rhs_order : other.m_order_history) {
+        m_order_history.push_back(new Order(*rhs_order));
     }
 }
 
@@ -22,7 +21,16 @@ Customer &Customer::operator=(const Customer &rhs) {
 
     m_name = rhs.m_name;
     m_contact_info = rhs.m_contact_info;
-    m_order_history = rhs.m_order_history;
+
+    for (auto order : m_order_history) {
+        delete order;
+    }
+
+    m_order_history.clear();
+
+    for (const auto &rhs_order : rhs.m_order_history) {
+        m_order_history.push_back(new Order(*rhs_order));
+    }
 
     return *this;
 }
@@ -45,8 +53,9 @@ Customer &Customer::operator=(Customer &&rhs) noexcept {
     return *this;
 }
 
-void Customer::place_order(Order order) {
+void Customer::place_order(Order *order) {
     m_order_history.push_back(std::move(order));
+    order = nullptr;
 }
 
 void Customer::view_order_history(void) const {
